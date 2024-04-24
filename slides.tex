@@ -1,0 +1,366 @@
+% General
+\documentclass[xcolor=table,aspectratio=169]{beamer}
+\usetheme{Madrid}
+
+% Figures
+\usepackage{epsfig}
+\usepackage{psfrag}
+\usepackage{wrapfig}
+\usepackage{graphicx}
+\usepackage{subcaption}
+
+% Colours
+\usepackage{color}
+\usepackage[table]{xcolor}
+\input{seaborn_colours.tex}
+\definecolor{twitter_blue}{HTML}{1da1f2}
+\definecolor{gruvbox_dark_bg}{HTML}{282828}
+\definecolor{gruvbox_fg}{HTML}{ebdbb2}
+\definecolor{kgrey}{HTML}{2b2828}
+\definecolor{linh_pink}{HTML}{fd26ea}
+\definecolor{linh_blue}{HTML}{2D8AC3}
+
+% Fonts
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage[T1]{fontenc}
+\usepackage{pifont}
+\usepackage{helvet}
+\usepackage{cancel} % for \cancel
+\usepackage[normalem]{ulem} % for \sout (strike out)
+\renewcommand{\ttdefault}{pcr} % enables bold fixed width font
+
+% Tables
+\usepackage{array}
+\usepackage{multicol}
+\usepackage{tabularx}
+\usepackage{multirow}
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+\usepackage{siunitx,booktabs}
+
+% References
+\usepackage[style=verbose-note, sorting=none, sortcites=true, maxnames=1, giveninits=true, autocite=superscript, doi=false, url=false, isbn=false, backend=biber, citetracker=false, pagetracker=false, bibencoding=utf8, eprint=false]{biblatex}
+% Gobbling first names
+\AtEveryCitekey{%
+   \clearfield{shorttitle}%
+   \clearfield{month}%
+   \clearfield{day}%
+   \ifentrytype{article}{%
+      \clearfield{title}%
+   }{}
+   }
+% "blindfootcite" is the equivalent of "footcite" except the number marker does not appear
+\newcommand\blfootcite[1]{%
+  \begingroup
+  \renewcommand\thefootnote{}\footnote{\hspace{-4ex}\cite{#1}}%
+  \addtocounter{footnote}{-1}%
+  \endgroup
+}
+\renewcommand*{\multicitedelim}{\textcolor{seaborn_bg_grey_darker}{\addsemicolon}}
+\setbeamerfont{footnote}{size=\scriptsize}
+\renewcommand\footnoterule{\kern-3pt \color{seaborn_bg_grey_darker}\hrule width \textwidth height 0.4pt \color{black} \kern 2.6pt}
+\DeclareSourcemap{
+  \maps[datatype=bibtex,overwrite=False]{
+   \map{
+     \step[fieldsource=journal,
+           match={Journal of Chemical Theory and Computation},
+           replace={JCTC}]
+     \step[fieldsource=journal,
+           match={Reviews of Modern Physics},
+           replace={Rev. Mod. Phys.}]
+     \step[fieldsource=journal,
+           match={Reports on Progress in Physics},
+           replace={Rep. Prog. Phys.}]
+     \step[fieldsource=journal,
+           match={Physical Review Letters},
+           replace={Phys. Rev. Lett.}]
+     \step[fieldsource=journal,
+           match={Physical Review},
+           replace={Phys. Rev.}]
+     \step[fieldsource=journal,
+           match={B - Condensed Matter and Materials Physics},
+           replace={B}]
+     \step[fieldsource=journal,
+           match={Journal of Chemical Physics},
+           replace={J. Chem. Phys.}]
+     \step[fieldsource=journal,
+           match={Annual Review of Materials Research},
+           replace={Annu. Rev. Mater. Res.}]
+   }
+  }
+}
+
+\renewbibmacro{in:}{}
+\DeclareFieldFormat{pages}{\mkfirstpage{#1}}
+\beamertemplatenavigationsymbolsempty
+\setbeamertemplate{bibliography item}[text]
+\renewbibmacro{in:}{}
+\AtEveryBibitem{\clearfield{title}}
+\AtEveryBibitem{\clearfield{month}}
+\AtEveryBibitem{\clearfield{pages}}
+\DeclareNameAlias{default}{given-family}
+\bibliography{references.bib}
+
+% Tikz
+\usepackage{tikz}
+\usetikzlibrary{positioning,shapes,arrows,backgrounds,fit,calc,external,trees,tikzmark,fadings}
+\tikzfading[name=fade bottom,top color=transparent!0, bottom color=transparent!100]
+% \tikzexternalize[prefix=tikzfigures/]
+\tikzstyle{dummy} = []
+\tikzstyle{line} = [draw, thick, -latex']
+\tikzstyle{headless_line} = [draw, thick, -]
+\tikzstyle{default}    = [rectangle, text centered, rounded corners, text=black, font=\sffamily\footnotesize, align=center]
+\tikzstyle{default_text}    = [rectangle, text width=10cm, text=black,anchor=north west, font=\sffamily]
+\tikzstyle{boxwhite} = [default, fill=white, rounded corners=0.1cm]
+\tikzstyle{cp}    = [default, fill=seaborn_blue, text=white, text width=2.8cm, minimum height=0.5cm]
+\tikzstyle{pw}    = [cp, fill=seaborn_green]
+\tikzstyle{wannier90}    = [cp, fill=seaborn_cyan]
+\tikzstyle{bespoke}    = [cp, fill=seaborn_magenta]
+\tikzstyle{observable}    = [cp, fill=seaborn_red]
+\tikzset{
+  -|-/.style={
+    to path={
+      (\tikztostart) -| ($(\tikztostart)!#1!(\tikztotarget)$) |- (\tikztotarget)
+      \tikztonodes
+    }
+  },
+  -|-/.default=0.5,
+  |-|/.style={
+    to path={
+      (\tikztostart) |- ($(\tikztostart)!#1!(\tikztotarget)$) -| (\tikztotarget)
+      \tikztonodes
+    }
+  },
+  |-|/.default=0.5,
+}
+\newlength{\myyshift}
+\setlength{\myyshift}{0.05cm}
+\usetikzlibrary{calc}
+\newlength{\myfigscale}
+\setlength{\myfigscale}{0.3cm}
+\usepackage{smartdiagram}
+\usesmartdiagramlibrary{additions}
+% For tikz diagrams with nodes appearing on each slide
+\tikzset{
+  invisible/.style={opacity=0},
+  visible on/.style={alt={#1{}{invisible}}},
+  alt/.code args={<#1>#2#3}{%
+    \alt<#1>{\pgfkeysalso{#2}}{\pgfkeysalso{#3}} % \pgfkeysalso doesn't change the path
+  },
+}
+
+% Color boxes
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,hooks}
+\tcbset{colframe=structure,fonttitle=\bfseries,beamer, clip upper, boxsep=0pt, sharp corners=all, no shadow, left skip=0pt, right skip=0pt, coltext=white}
+
+% Misc
+\usepackage{adjustbox}
+\usepackage{verbatim}
+\usepackage{cleveref}
+\usepackage{lipsum}
+
+% New commands
+\newcommand{\bra}[1]{\langle #1|}
+\newcommand{\braket}[2]{\langle #1|#2\rangle}
+\newcommand{\braopket}[3]{\langle #1|#2|#3\rangle}
+\newcommand{\ket}[1]{|#1\rangle}
+\newcommand{\nline}{\nonumber \\}
+\newcommand{\Trace}{\mathsf{Tr}}
+\newcommand{\insertframeinfo}{\insertframenumber/\inserttotalframenumber}
+\newcommand{\backupbegin}{
+   \newcounter{finalframe}
+   \setcounter{finalframe}{\value{framenumber}}
+   \renewcommand{\insertframeinfo}{}
+}
+\newcommand{\backupend}{
+   \setcounter{framenumber}{\value{finalframe}}
+}
+
+% Numbering
+\numberwithin{equation}{section}
+\AtBeginEnvironment{frame}{\setcounter{footnote}{0}}
+
+% Code blocks
+% N.B.
+%  - frame must have [fragile]
+%  - use \begin{onlyenv} not \only
+%  - after a lot of mucking around, I created gruvbox_plain as another style
+%    that exclusively uses gruvbox's bg and fg with no syntax highlighting
+%  - use [autogobble] to remove leading indentations
+% (taken from https://github.com/daveyarwood/gruvbox-pygments)
+\usepackage{minted}
+\usemintedstyle{gruvbox-dark}
+\setminted[python]{bgcolor=gruvbox_dark_bg}
+\setminted[json]{bgcolor=gruvbox_dark_bg}
+\setminted[shell-session]{style=gruvbox_plain, bgcolor=gruvbox_dark_bg}
+
+% Beamer colors
+\setbeamercolor{frametitle}{bg=kgrey,fg=white}
+\setbeamerfont{normal text}{family=helvet}
+\setbeamerfont{local structure}{family=helvet}
+\setbeamercolor*{author in head/foot}{bg=seaborn_blue}
+\setbeamercolor*{logo in head/foot}{bg=seaborn_blue,fg=white}
+\setbeamercolor*{title in head/foot}{bg=seaborn_blue,fg=kgrey}
+\setbeamercolor*{date in head/foot}{bg=seaborn_blue,fg=white}
+\setbeamercolor{title}{fg=kgrey}
+\setbeamercolor{under headline}{bg=seaborn_red}
+\setbeamercolor{footline}{bg=seaborn_blue}
+\setbeamercolor{caption name}{fg=seaborn_blue}
+\setbeamercolor{block title}{bg=kgrey,fg=white}
+\setbeamercolor{block body}{bg=seaborn_bg_grey,fg=black}
+\setbeamercolor{footnote}{fg=seaborn_bg_grey_darker}
+\setbeamertemplate{blocks}[default]
+\setbeamerfont*{title in head/foot}{size=\small}
+\setbeamerfont*{date in head/foot}{size=\small}
+\setbeamerfont*{institute}{size=\Large}
+% Lists
+\setbeamertemplate{itemize items}{\normalsize $\bullet$}
+\setbeamercolor{description item}{fg=seaborn_blue}
+\setbeamertemplate{enumerate items}[default]
+\setbeamercolor{enumerate item}{fg=seaborn_blue}
+\setbeamercolor{itemize item}{fg=seaborn_blue}
+\setbeamercolor{itemize subitem}{fg=seaborn_blue}
+\setbeamercolor{itemize subsubitem}{fg=seaborn_blue}
+% Bibliography
+\setbeamercolor*{bibliography entry title}{fg=seaborn_bg_grey_darker}
+\setbeamercolor*{bibliography entry author}{fg=seaborn_bg_grey_darker}
+\setbeamercolor*{bibliography entry location}{fg=seaborn_bg_grey_darker}
+\setbeamercolor*{bibliography entry note}{fg=seaborn_bg_grey_darker}
+\setbeamertemplate{bibliography item}[text]
+
+% Frame title
+\setbeamertemplate{frametitle}
+{
+  \vspace{-1pt}
+  \begin{beamercolorbox}[wd=\paperwidth,ht=0.8cm]{frametitle}
+   \hspace{0.05em}
+   \begin{minipage}[c]{0.8\textwidth}
+     \bf \insertframetitle
+
+   \end{minipage}
+   \hfill
+   \begin{minipage}{0.15\textwidth}
+   \begin{flushright}
+   \scriptsize \textbf{Edward Linscott}
+   
+   {\raisebox{-0.15cm}{\includegraphics[height=0.45cm]{logos/psi_white_on_transparent.png}}
+   \textbf{|}\hspace{0.1cm}
+   \raisebox{-0.02cm}{\textbf{\insertframeinfo}}}%
+   \vspace{-0.1cm}
+   \end{flushright}
+   \end{minipage}
+   \vspace{0.125cm}
+  \end{beamercolorbox}%
+}
+
+% Title page
+\setbeamertemplate{title page}
+{
+  \leavevmode%
+  \vbox{%
+  \vspace{-0.15\paperwidth}%
+  \noindent\begin{tcolorbox}[enhanced,watermark graphics=photos/psi_in_mist_large.jpg, width=1.01\paperwidth, height=0.741\paperwidth, watermark zoom=1.0, grow to left by=0.05\paperwidth, frame hidden, coltext=kgrey]
+
+  \vspace{0.26\paperwidth}
+
+  \begin{minipage}{\textwidth}
+  %  \begin{flushright}
+  %  \includegraphics[height=0.05\textheight]{logos/logo_marvel_color_transparent.png}
+  %  \hspace{0.1ex}
+  %  \includegraphics[height=0.05\textheight]{logos/SNF_logo_standard_web_color_pos_e.png}
+  %  % \hspace{0.01\textheight}
+  %  % \includegraphics[height=0.05\textheight]{logos/black_cropped.eps}
+  %  \hspace{0.1cm}\hbox{}
+  % \end{flushright}
+
+  \begin{center} 
+  \LARGE
+      
+  \textbf{\inserttitle}
+
+  \large
+  \textbf{\insertsubtitle}
+  \end{center}
+  \end{minipage}
+  \end{tcolorbox}
+
+  \vspace{-3.7em}
+  \begin{tcolorbox}[width=0.976\paperwidth, enhanced, colback=kgrey, grow to left by=0.035\paperwidth,]
+  %  \begin{center}
+  %  \footnotesize\bf\insertauthor\quad \raisebox{0.1ex}{|} \quad \insertshortinstitute\ \quad \raisebox{0.1ex}{|} \quad THEOS Group Meeting \quad \raisebox{0.1ex}{|} \quad \insertdate \quad \raisebox{0.1ex}{|} \quad \includegraphics[height=1.5ex]{logos/SNF_logo_standard_web_sw_neg_e.png} \ \ \includegraphics[height=1.5ex]{logos/logo_marvel_color_transparent_inverted.png}
+  %  \end{center}
+  \vspace{-0.7ex}
+  \hfill \footnotesize\bf\insertauthor \hfill \raisebox{0.1ex}{|} \hfill \raisebox{-1.1ex}{\includegraphics[height=3.4ex]{logos/psi_white_on_transparent.png}} \hfill \raisebox{0.1ex}{|} \hfill \insertdate \hfill \raisebox{0.1ex}{|} \hfill \includegraphics[height=1.5ex]{logos/snf_white_on_transparent.png} \ \ \includegraphics[height=1.5ex]{logos/marvel_white_on_transparent.png} \ \hfill
+  %  \end{flushright}
+  \end{tcolorbox}
+  }
+}
+%\setbeamerfont{frametitle}{series=\bfseries}
+\setbeamertemplate{footline}
+{
+}
+
+% Title slide %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\author{Edward Linscott}
+\institute{Laboratory for Materials Simulations\\Paul Scherrer Institute}
+\date{21 March 2024}
+\title{Title here}
+\subtitle{subtitle here}
+
+% Document contents
+\begin{document}
+
+% Title slide
+\frame{\titlepage}
+
+% Body
+\begin{frame}{Frame title}
+    Frame body
+\end{frame}
+
+% Acknowledgements
+\begingroup
+\setbeamertemplate{footline}{}
+\begin{frame}{Acknowledgements}
+   \begin{center}
+      \footnotesize
+      \begin{tabularx}{0.5\textwidth}{CC}
+         \includegraphics[height = 0.3\paperheight]{photos/nicola_marzari.jpg}  &
+         \includegraphics[height = 0.3\paperheight]{photos/nicola_colonna.png} \\
+         Nicola Marzari                                                          &
+         Nicola Colonna                                                          
+      \end{tabularx}
+   \end{center}
+   \begin{center}
+      \includegraphics[height = 0.15\paperheight]{logos/snf_color.eps}
+      \hspace{3em}
+      \includegraphics[height = 0.15\paperheight]{logos/marvel_color_on_white_trimmed.png}
+   \end{center}
+
+   \vspace{1ex}
+
+   \begin{center}
+      Want to find out more? Go to \textbf{\texttt{\href{https://koopmans-functionals.org/en/latest/}{koopmans-functionals.org}}}
+
+      \vspace{1em}
+      Follow \includegraphics[height=\fontcharht\font`\B]{logos/twitter.png} \textcolor{twitter_blue}{@ed\_linscott} for updates | Slides available at \includegraphics[height=\fontcharht\font`\B]{logos/github.png} \href{https://github.com/elinscott-talks/}{\textbf{\texttt{github/elinscott-talks}}}
+   \end{center}
+
+\end{frame}
+\endgroup
+
+% Backup slides
+\backupbegin
+\begin{frame}{}
+
+   \begin{center}
+      \huge SPARE SLIDES
+   \end{center}
+
+\end{frame}
+
+\backupend
+\end{document}
