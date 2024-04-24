@@ -393,26 +393,65 @@
 \end{frame}
 
 \begin{frame}{Koopmans functionals: theory}
-   Consequences of ODD:
-   \begin{itemize}[<+(1)->]
-      \item variational (localized, minimizing) vs canonical (delocalized, diagonalizing) orbitals
-            \begin{figure}[t]
-               \centering
-               \begin{subfigure}{0.3\textwidth}
-                  \includegraphics[height=\columnwidth,angle=90]{figures/fig_nguyen_variational_orbital.png}
-                  \caption{variational}
-               \end{subfigure}
-               \hspace{0.1\textwidth}
-               \begin{subfigure}{0.3\textwidth}
-                  \includegraphics[height=\columnwidth,angle=90]{figures/fig_nguyen_canonical_orbital.png}
-                  \caption{canonical}
-               \end{subfigure}
-            \end{figure}
-      \item Practically we can often use MLWFs
-      \item localized variational orbitals naturally allow us to treat bulk systems
-      % \item ODD functional means that we know $\hat H \ket{\varphi_i}$ for variational orbitals $\{\ket{\varphi_i}\}$ but we don't know $\hat H$ in general
-   \end{itemize}
+   Orbital density dependence:
+   \begin{equation*}
+      v^\mathsf{KI}_{{i}}/\alpha_i = - E_{\mathsf{H}}\left[{n_{i}}\right]
+      + E_{\mathsf{xc}}\left[\rho\right]
+      - E_{\mathsf{xc}}\left[\rho-{n_{i}}\right]
+      - \int d\mathbf{r'}
+      v_\mathsf{xc}(\mathbf{r}', [\rho])
+      {n_{i}}(\mathbf{r}')
+   \end{equation*}
+   
+   \onslide<2->{How to solve:}
+   \onslide<2->{initialise with MLWFs, then minimize with CG}
+   \begin{description}[<+(2)->]
+      \item[outer loop:] $\varphi^{(n+1)}_i = \varphi_i^{(n)} + \Delta_i$
+      \item[inner loop:] $\varphi^{(n+1)}_i = \sum_{j}U_{ij}\varphi_j^{(n)}$
+   \end{description}
+   \blfootcite{Borghi2015}
+
+   \onslide<5->{
+   Leads to ``variational" orbitals $\varphi_i$
+
+   \begin{center}
+      \includegraphics[height=0.3\textwidth,angle=90]{figures/fig_nguyen_variational_orbital.png}
+   \end{center}
+
+   \vspace{-1ex}
+   But these don't diagonalise the Hamiltonian...
+   }
+
+\end{frame}
+
+\begin{frame}{Koopmans functionals: theory}
+
+   Two sets of orbitals:
+
+   \begin{figure}[t]
+      \centering
+      \begin{subfigure}{0.45\textwidth}
+         \includegraphics[height=0.8\columnwidth,angle=90]{figures/fig_nguyen_variational_orbital.png}
+         \caption{``variational" $\varphi_i$ (localised, minimising)}
+      \end{subfigure}
+      \begin{subfigure}{0.45\textwidth}
+         \includegraphics[height=0.8\columnwidth,angle=90]{figures/fig_nguyen_canonical_orbital.png}
+         \caption{``canonical" $\psi_i$ (delocalised, diagonalising)}
+      \end{subfigure}
+   \end{figure}
    \blfootcite{Nguyen2018}
+
+   \onslide<2->{
+   \vspace{1ex}
+   \begin{equation*}
+      \hat H \ket{\psi_i} = \hat h^\mathsf{DFT} \ket{\psi_i} + \sum_j U_{ij} v_j^\mathsf{KI}\ket{\varphi_j}
+   \end{equation*}
+   }
+
+   \onslide<3->{
+   \vspace{1ex}
+   N.B. we know $\hat H \ket{\varphi_i}$ for variational orbitals $\{\ket{\varphi_i}\}$ but we don't know $\hat H$ in general
+   }
 \end{frame}
 
 \begin{frame}{Koopmans functionals: the bulk limit}
